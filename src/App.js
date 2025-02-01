@@ -10,15 +10,25 @@ function Square({value, onSquareClick}) {
   return <button className="square" onClick={onSquareClick}>
           {value}
          </button>
-
 }
 export default function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
     // Destructuring: Allows me to unpack an array or object and put whatever is inside them into different variables. In this case, we know useState will return a variable and a function, so we store them into 2 constants called value and setValue
+  const [xIsNext, setXIsNext] = useState(true);
   function handleClick(i){
     const nextSquares = squares.slice();
-    nextSquares[i]="X";
+    if (squares[i]) {
+      return;
+    }
+    if (xIsNext){
+      nextSquares[i]="X";
+    }
+    else{
+      nextSquares[i]="O";
+    }
+    // nextSquares[i]="X";
     setSquares(nextSquares);
+    setXIsNext(!xIsNext);
   }
     return (
     <>
@@ -31,6 +41,8 @@ export default function Board() {
         Here is why this doesn’t work. The handleClick(0) call will be a part of rendering the board component. Because handleClick(0) alters the state of the board component by calling setSquares, your entire board component will be re-rendered again. But this runs handleClick(0) again, leading to an infinite loop.
         
         When you were passing onSquareClick={handleClick}, you were passing the handleClick function down as a prop. You were not calling it! But now you are calling that function right away—notice the parentheses in handleClick(0)—and that’s why it runs too early. You don’t want to call handleClick until the user clicks!*/}
+
+        {/* By default, all child components re-render automatically when the state of a parent component changes. */}
         <Square value={squares[1]} onSquareClick={()=>handleClick(1)}/>
         <Square value={squares[2]} onSquareClick={()=>handleClick(2)}/>
 
